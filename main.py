@@ -5,6 +5,7 @@ from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 
 import pandas as pd
+import matplotlib.pyplot as plt
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 # Add more websites and tickers later
@@ -60,4 +61,15 @@ df = pd.DataFrame(parsed_data, columns=['ticker', 'date', 'time', 'title'])
 
 vader = SentimentIntensityAnalyzer()
 
-df['compound score'] = df['title'].apply(lambda title: vader.polarity_scores(title)['compound']) 
+temp = lambda title: vader.polarity_scores(title)['compound']
+df['compound'] = df['title'].apply(temp) 
+df['date'] = pd.to_datetime(df.date).dt.date
+
+plt.figure(figsize=(10,8))
+mean_df = df.groupby(['ticker', 'date'])['compound'].mean()
+#mean_df =  mean_df.xs('compound', axis="columns")
+mean_df.plot(kind='bar')
+plt.show()
+
+
+
