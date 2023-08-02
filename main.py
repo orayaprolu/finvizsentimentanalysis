@@ -56,9 +56,8 @@ for t in tickers:
     
     break
 
-# df = pd.DataFrame(parsed_data, columns=['ticker', 'date', 'time', 'title'])
+df = pd.DataFrame(parsed_data, columns=['ticker', 'date', 'time', 'title'])
 
-# vader = SentimentIntensityAnalyzer()
+vader = SentimentIntensityAnalyzer()
 
-# f = lambda title: vader.polarity_scores(title)['compound']
-# df['compound score'] = df['title'].apply(f)
+df['compound score'] = df['title'].apply(lambda title: vader.polarity_scores(title)['compound']) 
