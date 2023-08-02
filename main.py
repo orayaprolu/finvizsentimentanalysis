@@ -11,6 +11,8 @@ tickers = ["AMD", "AAPL", "GOOGL", "META"]
 # Map of ticker and news-table pair
 news_tables = {}
 
+parsed_data = []
+
 # Goes through each ticker
 for t in tickers:
     url = finviz_base_url + t
@@ -24,12 +26,31 @@ for t in tickers:
     news_tab = html.find(id='news-table')
     news_tables[t] = news_tab
 
+    # Goes through every table row in the table
+    for row in news_tab.findAll('tr'):
+
+        # Anchor(a) element
+        title_element = row.a
+
+        # Table Data(td) element
+        date_element = row.td
+
+        # Makes sure there is a valid title and date
+        if title_element is not None and date_element is not None:
+            title = title_element.text
+
+            # Removes white spaces from date
+            date_text = date_element.text.strip()
+
+            # Splits date and time
+            date_data = date_text.split(' ')
+            if len(date_data) == 1:
+                time = date_data[0]
+            else:
+                date = date_data[0]
+                time = date_data[1]
+            parsed_data.append([t, date, time, title])
+    
     break
 
-
-# t_data = news_tables[t]
-# t_rows = t_data.findAll('tr')
-# for index, row in enumerate(t_rows):
-#     title = row.a.text
-#     timestamp = row.td.text
-#     print(timestamp + " " + title)
+print(parsed_data)
