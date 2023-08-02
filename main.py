@@ -4,6 +4,9 @@ from urllib.request import urlopen, Request
 # Parsing module (converts html file into Pyton object to interact with html elements)
 from bs4 import BeautifulSoup
 
+import pandas as pd
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 # Add more websites and tickers later
 finviz_base_url = "https://finviz.com/quote.ashx?t="
 tickers = ["AMD", "AAPL", "GOOGL", "META"]
@@ -13,7 +16,7 @@ news_tables = {}
 
 parsed_data = []
 
-# Goes through each ticker
+# Goes through each ticker and parses into pared_data
 for t in tickers:
     url = finviz_base_url + t
     
@@ -53,4 +56,9 @@ for t in tickers:
     
     break
 
-print(parsed_data)
+# df = pd.DataFrame(parsed_data, columns=['ticker', 'date', 'time', 'title'])
+
+# vader = SentimentIntensityAnalyzer()
+
+# f = lambda title: vader.polarity_scores(title)['compound']
+# df['compound score'] = df['title'].apply(f)
