@@ -19,7 +19,17 @@ for t in tickers:
     req = Request(url= url, headers= {"user-agent": "'my-app"})
     response = urlopen(req)
 
-    # Specifies webpage is html and only returns 'news-table' blocks
+    # Specifies webpage is html and only returns entire 'news-table' block
     html = BeautifulSoup(response, "html")
-    newsTab = html.find(id='news-table')
-    news_tables[t] = newsTab
+    news_tab = html.find(id='news-table')
+    news_tables[t] = news_tab
+
+    break
+
+
+# t_data = news_tables[t]
+# t_rows = t_data.findAll('tr')
+# for index, row in enumerate(t_rows):
+#     title = row.a.text
+#     timestamp = row.td.text
+#     print(timestamp + " " + title)
