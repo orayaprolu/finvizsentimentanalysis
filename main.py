@@ -4,20 +4,24 @@ from urllib.request import urlopen, Request
 # Parsing module (converts html file into Pyton object to interact with html elements)
 from bs4 import BeautifulSoup
 
+# Pandas module allows for flexible usage of data
 import pandas as pd
+
+# Matplotlib allows for our data to be plotted out
 import matplotlib.pyplot as plt
+
+# Corpus and sentiment analysis algorithm
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-# Add more websites and tickers later
+# Add more tickers later
 finviz_base_url = "https://finviz.com/quote.ashx?t="
 tickers = ["AMD", "AAPL", "GOOGL", "META"]
 
 # Map of ticker and news-table pair
 news_tables = {}
 
-parsed_data = []
-
 # Goes through each ticker and parses into pared_data
+parsed_data = []
 for t in tickers:
     url = finviz_base_url + t
     
@@ -53,23 +57,23 @@ for t in tickers:
             else:
                 date = date_data[0]
                 time = date_data[1]
-            parsed_data.append([t, date, time, title])
-    
-    break
 
+            parsed_data.append([t, date, time, title])
+
+# Organizes our list of arrays into a dataframe
 df = pd.DataFrame(parsed_data, columns=['ticker', 'date', 'time', 'title'])
 
+# Sentiment analysis score range from -1 to 1, lambda function 
 vader = SentimentIntensityAnalyzer()
-
 temp = lambda title: vader.polarity_scores(title)['compound']
-df['compound'] = df['title'].apply(temp) 
+df['compound'] = df['title'].apply(temp)
+
+# Dataframe understands date column as dates
 df['date'] = pd.to_datetime(df.date).dt.date
 
-plt.figure(figsize=(10,8))
-mean_df = df.groupby(['ticker', 'date'])['compound'].mean()
-#mean_df =  mean_df.xs('compound', axis="columns")
+# Groups together all of the rows with the same ticker and date and finds the mean of the compound column
+mean_df = df.groupby(['ticker', 'date'])["compound"].mean().unstack().transpose()   
+print(mean_df)
+
 mean_df.plot(kind='bar')
 plt.show()
-
-
-
