@@ -15,7 +15,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 # Add more tickers later
 finviz_base_url = "https://finviz.com/quote.ashx?t="
-tickers = ["AMD", "AAPL", "GOOGL", "META"]
+tickers = ["AAPL", "GOOGL", "META", "AMZN"]
 
 # Map of ticker and news-table pair
 news_tables = {}
