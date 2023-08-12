@@ -4,10 +4,9 @@ from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 
 
-def parse_data():
+def parse_data(tickers):
 
     finviz_base_url = "https://finviz.com/quote.ashx?t="
-    tickers = ["AAPL", "GOOGL", "META", "AMZN"]
 
     # Goes through each ticker and parses into pared_data
     parsed_data = []
@@ -19,7 +18,7 @@ def parse_data():
         response = urlopen(req)
 
         # Specifies webpage is html and only returns entire 'news-table' block
-        html = BeautifulSoup(response, "html")
+        html = BeautifulSoup(response, features="html.parser")
         news_tab = html.find(id='news-table')
 
         # Goes through every table row in the table

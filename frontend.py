@@ -5,6 +5,8 @@ import altair as alt
 import mean_sentiment_score as msc
 import web_scraping as ws
 
+tickers = ["AAPL", "GOOGL", "META", "AMZN"]
+
 header = st.container()
 dataset = st.container()
 user_inputs = st.container()
@@ -15,25 +17,32 @@ with header:
 
 with dataset:   
     st.header("Over the past week...")
+    df = msc.mean_sentiment_score(ws.parse_data(tickers))
 
-    sentiment_data = msc.mean_sentiment_score(ws.parse_data())
-    # Melt the DataFrame to long format for Altair visualization
-    melted_data = pd.melt(sentiment_data, var_name='ticker', value_name='sentiment')
-    print(melted_data)
-        
-    y_min, y_max = -10, 10
+    # print(df)
+    # print("------")
+    # print(df.index)
+    # print("------")
+    # print(df.columns)
+    #print(df['AAPL'])
+    
 
-    chart = alt.Chart(melted_data).mark_line(point=True).encode(
-        x='date:T',
-        y=alt.Y('compound:Q', scale=alt.Scale(domain=(y_min, y_max))),
-        color='ticker:N',
-        tooltip=['date', 'ticker', 'compound']
-        ).interactive()
+    chart = alt.Chart(df).mark_line().encode(
+        x='date:T',         # X-axis: Date (time-based scale)
+        y=tickers[0],
+        color='ticker:N'   # Color by ticker (nominal scale)
+
+    ).properties(
+        width=600,
+        height=300,
+        title='Basic Line Chart'
+    )
 
     st.altair_chart(chart)
 
-    st.subheader("Raw data")
-    st.table(sentiment_data)
+    st.subheader("Raw data")    
+    st.dataframe(df)
+
 
 
 with user_inputs:
